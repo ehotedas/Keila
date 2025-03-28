@@ -21,12 +21,17 @@
       border-radius: 20px;
       text-align: center;
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-      position: relative;
       box-sizing: border-box;
     }
     .painel img {
       max-width: 100%;
       height: auto;
+    }
+    /* Container exclusivo para os botões */
+    .btn-container {
+      position: relative;
+      display: inline-block;
+      margin-top: 20px;
     }
     button {
       height: 40px;
@@ -37,11 +42,12 @@
       color: white;
       cursor: pointer;
     }
+    /* O botão "Sim!" permanece posicionado normalmente */
     #sim {
-      margin-right: 10px;
       position: relative;
       z-index: 1;
     }
+    /* O botão "Não!" será posicionado absolutamente dentro do container */
     #nao {
       position: absolute;
       z-index: 2;
@@ -53,65 +59,75 @@
     <h1>Keila</h1>
     <img src="https://gifman.net/wp-content/uploads/2019/06/ursinho-fofo-apaixonado.gif" alt="Ursinho Fofo">
     <h2>Aceita ser minha mulher novamente para toda a vida?</h2>
-    <a href="https://www.youtube.com/watch?v=r2HmvxUI77M">
-      <button id="sim">Sim!</button>
-    </a>
-    <button onmouseover="fuja()" id="nao">Não!</button>
+    <div class="btn-container">
+      <a href="https://www.youtube.com/watch?v=r2HmvxUI77M">
+        <button id="sim">Sim!</button>
+      </a>
+      <button onmouseover="fuja()" id="nao">Não!</button>
+    </div>
   </div>
   <script>
+    // Função para reposicionar o botão "Não!" evitando a sobreposição com o "Sim!"
     function fuja(){
-      const botaoNao = document.getElementById("nao");
-      const painel = document.querySelector('.painel');
+      const nao = document.getElementById("nao");
+      const container = document.querySelector('.btn-container');
       const sim = document.getElementById("sim");
-      
-      const painelWidth = painel.clientWidth;
-      const painelHeight = painel.clientHeight;
-      
-      const botaoWidth = botaoNao.offsetWidth;
-      const botaoHeight = botaoNao.offsetHeight;
-      
-      // Limites máximos de posição dentro do painel
-      const maxX = painelWidth - botaoWidth;
-      const maxY = painelHeight - botaoHeight;
-      
-      // Obter posição do botão "Sim!" relativa ao painel
-      const simLeft = sim.offsetLeft;
-      const simTop = sim.offsetTop;
+
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+      const naoWidth = nao.offsetWidth;
+      const naoHeight = nao.offsetHeight;
+
+      // Obtemos a posição do "Sim!" relativa ao container
+      const simRect = sim.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const simX = simRect.left - containerRect.left;
+      const simY = simRect.top - containerRect.top;
       const simWidth = sim.offsetWidth;
       const simHeight = sim.offsetHeight;
-      
+
+      // Limites para posicionamento dentro do container
+      const maxX = containerWidth - naoWidth;
+      const maxY = containerHeight - naoHeight;
+
       let newX, newY, overlap;
-      let tentativas = 0;
-      const margem = 10; // margem de 10px
-      
-      // Tenta encontrar uma posição aleatória que não colida com o botão "Sim!"
+      let attempts = 0;
+      const margin = 10; // margem mínima entre os botões
+
       do {
         newX = Math.floor(Math.random() * maxX);
         newY = Math.floor(Math.random() * maxY);
-        
-        // Verifica colisão: se o botão "Não!" estiver muito perto do "Sim!"
+
+        // Verifica se a nova posição está a pelo menos "margin" de distância do botão "Sim!"
         overlap = !(
-          (newX + botaoWidth + margem < simLeft) || 
-          (newX - margem > simLeft + simWidth) ||
-          (newY + botaoHeight + margem < simTop) || 
-          (newY - margem > simTop + simHeight)
+          (newX + naoWidth + margin < simX) ||
+          (newX - margin > simX + simWidth) ||
+          (newY + naoHeight + margin < simY) ||
+          (newY - margin > simY + simHeight)
         );
-        tentativas++;
-      } while (overlap && tentativas < 50);
-      
-      botaoNao.style.left = newX + "px";
-      botaoNao.style.top = newY + "px";
+        attempts++;
+      } while (overlap && attempts < 50);
+
+      nao.style.left = newX + "px";
+      nao.style.top = newY + "px";
     }
     
-    // Ao carregar o DOM, posiciona inicialmente o botão "Não!" ao lado do botão "Sim!"
+    // Ao carregar o DOM, posiciona inicialmente o botão "Não!" ao lado do "Sim!" com um leve espaço
     document.addEventListener("DOMContentLoaded", function() {
+      const container = document.querySelector('.btn-container');
       const sim = document.getElementById("sim");
       const nao = document.getElementById("nao");
-      const margem = 10;
+      const margin = 10;
       
-      // Posiciona o "Não!" à direita do "Sim!"
-      nao.style.left = (sim.offsetLeft + sim.offsetWidth + margem) + "px";
-      nao.style.top = sim.offsetTop + "px";
+      // Obtemos a posição do "Sim!" relativa ao container
+      const simRect = sim.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const simX = simRect.left - containerRect.left;
+      const simY = simRect.top - containerRect.top;
+      
+      // Posiciona "Não!" imediatamente à direita do "Sim!"
+      nao.style.left = (simX + sim.offsetWidth + margin) + "px";
+      nao.style.top = simY + "px";
     });
   </script>
 </body>
