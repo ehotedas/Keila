@@ -1,86 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Te Amo</title>
-
-    <style>
-        body{
-            background-color: rgb(211, 31, 100);
-        }
-
-        .painel{
-            margin: auto;
-            background-color: white;
-            width: 500px;
-            height: 500px;
-            border-radius: 20px;
-            text-align: center;
-            padding-top: 50px;
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        }
-        #sim{
-            height: 40px;
-            width: 60px;
-            background-color: red;
-            border: 2px solid white;
-            border-radius: 10px;
-            color: white;
-            margin-left: -50px;
-        }
-        #nao{
-            position: absolute;
-            height: 40px;
-            width: 60px;
-            background-color: red;
-            border: 2px solid white;
-            border-radius: 10px;
-            color: white;
-            margin-left: 10px;
-        }
-
-    </style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Te Amo</title>
+  <style>
+    /* Reset básico e centralização */
+    body {
+      background-color: rgb(211, 31, 100);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    /* Painel centralizado e responsivo */
+    .painel {
+      background-color: white;
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      position: relative;  /* para que o botão "Não!" posicione relativo ao painel */
+      box-sizing: border-box;
+    }
+    /* Imagem responsiva */
+    .painel img {
+      max-width: 100%;
+      height: auto;
+    }
+    /* Estilos comuns para botões */
+    button {
+      height: 40px;
+      width: 60px;
+      background-color: red;
+      border: 2px solid white;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    /* Botão "Sim!" com margem */
+    #sim {
+      margin-right: 10px;
+    }
+    /* Botão "Não!" posicionado de forma absoluta dentro do painel */
+    #nao {
+      position: absolute;
+      /* Posição inicial centralizada horizontalmente */
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    /* Você pode adicionar media queries adicionais se necessário */
+  </style>
 </head>
 <body>
-
-    <div class="painel">
-        <h1> Keila </h1>
-
-        <img src="https://gifman.net/wp-content/uploads/2019/06/ursinho-fofo-apaixonado.gif" alt="">
-
-        <h2>Aceita ser minha mulher novamente para toda a vida? </h2>
-        
-
-        <a href="https://www.youtube.com/watch?v=r2HmvxUI77M"><button id="sim" > Sim! </button></a>
-        <button onmouseover="fuja()" id="nao"> Não! </button>
-        
-    </div>
-
-    <script>
-        function fuja(){
-            var botaoNao = document.getElementById("nao")
-
-            var larguraJanela = window.innerWidth;
-            var alturaJanela = window.innerHeight;
-
-            var maxX = larguraJanela - botaoNao.offsetWidth;
-            var maxY = alturaJanela - botaoNao.offsetHeight;
-
-            var aleatorioX = Math.floor(Math.random() * maxX);
-            var aleatorioY = Math.floor(Math.random() * maxY);
-
-            botaoNao.style.left = aleatorioX + "px";
-            botaoNao.style.top = aleatorioY + "px";
-
-
-        }
-    </script>
-
-
-
-    
+  <div class="painel">
+    <h1>Keila</h1>
+    <img src="https://gifman.net/wp-content/uploads/2019/06/ursinho-fofo-apaixonado.gif" alt="Ursinho Fofo">
+    <h2>Aceita ser minha mulher novamente para toda a vida?</h2>
+    <a href="https://www.youtube.com/watch?v=r2HmvxUI77M">
+      <button id="sim">Sim!</button>
+    </a>
+    <button onmouseover="fuja()" id="nao">Não!</button>
+  </div>
+  <script>
+    function fuja(){
+      var botaoNao = document.getElementById("nao");
+      var container = document.querySelector('.painel');
+      var containerRect = container.getBoundingClientRect();
+      var botaoRect = botaoNao.getBoundingClientRect();
+      
+      // Define os limites de movimento dentro do container
+      var maxX = containerRect.width - botaoRect.width;
+      var maxY = containerRect.height - botaoRect.height;
+      
+      // Calcula posições aleatórias
+      var aleatorioX = Math.floor(Math.random() * maxX);
+      var aleatorioY = Math.floor(Math.random() * maxY);
+      
+      botaoNao.style.left = aleatorioX + "px";
+      botaoNao.style.top = aleatorioY + "px";
+    }
+  </script>
 </body>
 </html>
