@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Te Amo</title>
   <style>
-    /* Reset básico e centralização */
     body {
       background-color: rgb(211, 31, 100);
       margin: 0;
@@ -14,7 +13,6 @@
       align-items: center;
       min-height: 100vh;
     }
-    /* Painel centralizado e responsivo */
     .painel {
       background-color: white;
       width: 90%;
@@ -23,15 +21,13 @@
       border-radius: 20px;
       text-align: center;
       font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-      position: relative;  /* para que o botão "Não!" posicione relativo ao painel */
+      position: relative;
       box-sizing: border-box;
     }
-    /* Imagem responsiva */
     .painel img {
       max-width: 100%;
       height: auto;
     }
-    /* Estilos comuns para botões */
     button {
       height: 40px;
       width: 60px;
@@ -41,18 +37,15 @@
       color: white;
       cursor: pointer;
     }
-    /* Botão "Sim!" com margem */
     #sim {
       margin-right: 10px;
+      position: relative;
+      z-index: 1;
     }
-    /* Botão "Não!" posicionado de forma absoluta dentro do painel */
     #nao {
       position: absolute;
-      /* Posição inicial centralizada horizontalmente */
-      left: 50%;
-      transform: translateX(-50%);
+      z-index: 2;
     }
-    /* Você pode adicionar media queries adicionais se necessário */
   </style>
 </head>
 <body>
@@ -67,22 +60,59 @@
   </div>
   <script>
     function fuja(){
-      var botaoNao = document.getElementById("nao");
-      var container = document.querySelector('.painel');
-      var containerRect = container.getBoundingClientRect();
-      var botaoRect = botaoNao.getBoundingClientRect();
+      const botaoNao = document.getElementById("nao");
+      const painel = document.querySelector('.painel');
+      const sim = document.getElementById("sim");
       
-      // Define os limites de movimento dentro do container
-      var maxX = containerRect.width - botaoRect.width;
-      var maxY = containerRect.height - botaoRect.height;
+      const painelWidth = painel.clientWidth;
+      const painelHeight = painel.clientHeight;
       
-      // Calcula posições aleatórias
-      var aleatorioX = Math.floor(Math.random() * maxX);
-      var aleatorioY = Math.floor(Math.random() * maxY);
+      const botaoWidth = botaoNao.offsetWidth;
+      const botaoHeight = botaoNao.offsetHeight;
       
-      botaoNao.style.left = aleatorioX + "px";
-      botaoNao.style.top = aleatorioY + "px";
+      // Limites máximos de posição dentro do painel
+      const maxX = painelWidth - botaoWidth;
+      const maxY = painelHeight - botaoHeight;
+      
+      // Obter posição do botão "Sim!" relativa ao painel
+      const simLeft = sim.offsetLeft;
+      const simTop = sim.offsetTop;
+      const simWidth = sim.offsetWidth;
+      const simHeight = sim.offsetHeight;
+      
+      let newX, newY, overlap;
+      let tentativas = 0;
+      const margem = 10; // margem de 10px
+      
+      // Tenta encontrar uma posição aleatória que não colida com o botão "Sim!"
+      do {
+        newX = Math.floor(Math.random() * maxX);
+        newY = Math.floor(Math.random() * maxY);
+        
+        // Verifica colisão: se o botão "Não!" estiver muito perto do "Sim!"
+        overlap = !(
+          (newX + botaoWidth + margem < simLeft) || 
+          (newX - margem > simLeft + simWidth) ||
+          (newY + botaoHeight + margem < simTop) || 
+          (newY - margem > simTop + simHeight)
+        );
+        tentativas++;
+      } while (overlap && tentativas < 50);
+      
+      botaoNao.style.left = newX + "px";
+      botaoNao.style.top = newY + "px";
     }
+    
+    // Ao carregar o DOM, posiciona inicialmente o botão "Não!" ao lado do botão "Sim!"
+    document.addEventListener("DOMContentLoaded", function() {
+      const sim = document.getElementById("sim");
+      const nao = document.getElementById("nao");
+      const margem = 10;
+      
+      // Posiciona o "Não!" à direita do "Sim!"
+      nao.style.left = (sim.offsetLeft + sim.offsetWidth + margem) + "px";
+      nao.style.top = sim.offsetTop + "px";
+    });
   </script>
 </body>
 </html>
